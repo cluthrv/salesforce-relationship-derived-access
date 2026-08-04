@@ -87,6 +87,10 @@ Developed and documented by Vikas Luthra, based on architecting enterprise Sales
 
 ---
 
+## Where to start
+
+Read [Pattern 1](patterns/01-relationship-record.md) first; it carries the core idea and everything else builds on it. Patterns 2 and 3 next. Save [implementation notes](salesforce/implementation-notes.md) for when you are actually building, since it is long and assumes the patterns are already familiar.
+
 ## Repository contents
 
 | Path | What it is |

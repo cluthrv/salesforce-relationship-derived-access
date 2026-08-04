@@ -4,6 +4,10 @@
 
 ---
 
+*This pattern defines the relationship. [Pattern 2](02-relationship-derived-visibility.md) derives visibility from it. [Pattern 3](03-relationship-context.md) determines which relationship a user is acting within.*
+
+---
+
 ## Problem
 
 An account can participate in more than one commercial relationship at the same time, and those relationships carry different terms, different scope and different lifespans. The standard account hierarchy provides one parent, so there is nowhere to put the second relationship.
@@ -22,18 +26,24 @@ Store the entity once. Store each relationship it participates in as its own rec
 
 The Account record answers *who this company is*. The Relationship Record answers *who it works with, where that applies, and for how long*.
 
+The relationship record becomes the authoritative source for commercial context: the thing every downstream access, pricing and entitlement decision reads.
+
 ## Structure
 
 | What the record captures | Design | Example |
 |---|---|---|
 | Who is connected | Two Account lookups: the party whose access is governed, and the counterparty | Summit Equipment and Distributor A |
-| What the relationship is | Relationship Type | Distributor, Brand, Parent Branch, Service |
+| What the relationship is | Relationship Type | Distributor, Dealer, Service Provider, Parent Branch |
 | Where it applies | Access Scope: one or more dimensions | Brand X, Colorado |
 | When it applies | Start date, end date, status | Active from January 2026 |
 
 **On Relationship Type.** It describes the nature of the relationship, not the kind of account participating in it. The same account can be a distributor in one relationship and a dealer in another.
 
-**On Access Scope.** Deliberately not a single field. One or two dimensions can be fields on this object. More than that and scope becomes a child object of its own. Common dimensions: brand, territory, product family, region, market segment.
+Keep type and scope distinct. *Distributor* is a relationship type. *Brand X* is scope within that relationship. If brand appears in both, you will end up with a type explosion: one type per brand, which defeats the purpose of having scope at all.
+
+**On Access Scope.** Deliberately not a single field. One or two dimensions are often fields on the relationship record. When scope becomes highly dimensional, or when a single relationship needs several combinations, it is usually better modeled as child records.
+
+There is no hard threshold. The decision depends on how many dimensions you have, whether they combine, and whether they change independently of the relationship itself. Common dimensions: brand, territory, product family, region, market segment.
 
 ## Rules
 

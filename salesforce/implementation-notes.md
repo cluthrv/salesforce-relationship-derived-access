@@ -2,6 +2,16 @@
 
 *Platform-specific depth for [Relationship-Derived Access](../README.md). The patterns themselves are platform-neutral; this document is the Salesforce reference implementation.*
 
+**Read [Pattern 1](../patterns/01-relationship-record.md) first.** This document assumes you already understand the pattern and want to know what building it involves.
+
+### What this document does not cover
+
+- Exact object volumes or governor-limit thresholds for your org
+- Specific licensing terms or contract pricing
+- Public group sizing rules
+- Production Apex. Code here is illustrative pseudocode showing shape
+- Anything that removes the need for your own performance testing
+
 ---
 
 ## Before you design sharing: the licence decision
@@ -100,7 +110,7 @@ If the engine writes shares on standard objects, it needs its own ownership trac
 
 ### Execution
 
-Queueable for ordinary recalculation, Batch when volume requires chunking. Never in a synchronous trigger path.
+Queueable is often appropriate for ordinary recalculation, and Batch when volume requires chunking. Avoid synchronous trigger paths for anything but the smallest recalculations. Platform Events are a reasonable alternative where you want producers and consumers decoupled.
 
 Many share fields are immutable, so an access level change is a delete plus an insert rather than an update. This makes the desired-state diff the safer approach, and it is why naive delete-all-and-reinsert causes lock contention at scale.
 
@@ -122,7 +132,9 @@ Non-optional. A relationship with an end date of yesterday expires without anyon
 
 This layer is an application pattern, not a platform feature.
 
-The active relationship is held in server-side session state. Every Apex entry point returning relationship-sensitive data resolves it through a single context service, which re-validates that the user actually holds the claimed relationship before anything else runs.
+The active relationship is held in **trusted server-side state**. Every Apex entry point returning relationship-sensitive data resolves it through a single context service, which re-validates that the user actually holds the claimed relationship before anything else runs.
+
+The reference implementation uses session state. Platform Cache, a dedicated session service, an external session store or a signed token are all reasonable alternatives. What matters is that the store is server-controlled and that the claim is re-validated rather than trusted.
 
 If context is enforced only in the LWC, the picker is the vulnerability: a user can switch to an organization they have no relationship with.
 
@@ -132,7 +144,11 @@ If context is enforced only in the LWC, the picker is the vulnerability: a user 
 
 **Assert the negative.** A test proving a user sees their own records passes just as happily when isolation is broken.
 
-**Make the security context explicit.** Declare `with sharing` and use user-mode data access rather than relying on API-version defaults.
+**Make the security context explicit.** Declare `with sharing` and use user-mode data access rather than relying on API-version defaults. This advice holds regardless of which release you are on.
+
+### API version considerations
+
+*Current as of Summer 2026. Verify against current documentation before relying on it.*
 
 For classes compiled at API 67.0 and later, database operations default to user mode, classes without a sharing declaration default to `with sharing`, and `WITH SECURITY_ENFORCED` is removed in favour of `WITH USER_MODE`. Earlier API versions retain the previous behaviour. See [REFERENCES.md](../REFERENCES.md).
 

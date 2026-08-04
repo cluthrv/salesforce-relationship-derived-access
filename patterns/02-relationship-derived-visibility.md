@@ -13,13 +13,15 @@ Standard sharing can grant access. It does not record the business relationship 
 ## Context and forces
 
 - Three things must hold simultaneously. A distributor rolls up across the dealers it serves. Sibling dealers must not see each other. Authority differs inside a single legal entity.
-- Any two of those are straightforward. All three together is where a configuration-only design runs out.
+- Any two of those are usually manageable with standard configuration. All three together is where configuration-only approaches tend to run out.
 - Relationships change: they start, expire, get suspended, and their scope shifts.
 - Some of those changes happen without anyone touching a record.
 
 ## Solution
 
 Derive record access from relationship state. When a relationship changes, recalculate the access that relationship justified, and apply only the difference.
+
+[Pattern 1](01-relationship-record.md) defines who is connected to whom. This pattern turns that relationship into enforceable visibility.
 
 ## Structure
 
@@ -42,7 +44,7 @@ Derive record access from relationship state. When a relationship changes, recal
 ### What you monitor
 
 - Failed recalculations and retry backlog
-- Orphan shares: a share row exists but the relationship that justified it does not
+- Orphan shares: access still exists but the relationship that justified it no longer does
 - Time between relationship expiry and access removal
 
 ## The case people miss
@@ -69,7 +71,7 @@ Share row count and group membership churn are two separate problems. Solving on
 
 ## Platform constraint worth knowing
 
-Custom Apex sharing reasons are available on **custom objects only**. On standard objects, programmatic shares use one of the supported standard row causes, commonly Manual, which means the engine cannot distinguish its own rows from human-created manual shares by row cause alone.
+Custom Apex sharing reasons are available on **custom objects only**. On standard objects, programmatic shares use one of the supported standard row causes, often Manual, which means the engine cannot reliably distinguish its own rows from human-created manual shares by row cause alone.
 
 If your engine writes shares on standard objects, it needs separate ownership tracking, typically a lightweight custom object recording what the engine created, diffed against before any deletion.
 
@@ -81,7 +83,7 @@ A test that confirms a user can see their own records passes just as happily whe
 
 Keep a visibility matrix: persona by record by expected result, versioned alongside the code and run every release. It is both your regression suite and your answer when someone from compliance asks how you know.
 
-Make the security context explicit rather than inheriting it from an API version. Declare `with sharing` and use user-mode data access. For classes at API 67.0 and later the defaults changed, and `WITH SECURITY_ENFORCED` is replaced by `WITH USER_MODE`; earlier versions retain the previous behaviour.
+Make the security context explicit rather than inheriting it from an API version. Declare `with sharing` and use user-mode data access. Version-specific defaults have changed over time, so do not rely on them; see [implementation notes](../salesforce/implementation-notes.md) for the current behaviour.
 
 Template: [templates/visibility-matrix.csv](../templates/visibility-matrix.csv)
 

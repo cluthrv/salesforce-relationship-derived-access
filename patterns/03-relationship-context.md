@@ -14,7 +14,7 @@ Jane logs in once. She works for both Summit Denver and Summit Boulder. Before t
 
 - One person can hold relationships with several partner organizations.
 - Creating a second login per relationship is the usual workaround, and it is a security and usability failure.
-- Authorization and visibility are routinely conflated, which is why portals accumulate hardcoded exceptions.
+- Authorization and visibility are often conflated, which is why portals accumulate hardcoded exceptions.
 - If the mechanism that establishes context is not enforced server-side, it becomes the vulnerability.
 
 ## Solution
@@ -30,6 +30,8 @@ Separate four questions that most portals collapse into one, and answer each wit
 
 **Conflating the last two is where portals rot.** Authorization decides what a user can do; visibility decides what they can see. Building one out of the other produces a system where changing a relationship requires changing profiles.
 
+[Pattern 1](01-relationship-record.md) defines the relationship. [Pattern 2](02-relationship-derived-visibility.md) derives visibility from it. This pattern determines which relationship the user is currently acting within.
+
 ## Structure
 
 **Identity.** SAML or OIDC with just-in-time provisioning, so larger partners keep their own identity provider and their own leaver process. One login, regardless of how many relationships the person holds.
@@ -38,7 +40,7 @@ Separate four questions that most portals collapse into one, and answer each wit
 
 This is an application pattern, not a standard platform feature.
 
-**Authorization.** Application and permission access resolved at runtime from tier, role, brand and the active relationship, rather than baked into profiles. Change the relationship and the application list follows.
+**Authorization.** Application availability is resolved at runtime from tier, role, brand and the active relationship, rather than baked into profiles. Change the relationship and the application list follows. This resolves what a user is offered, not a runtime mutation of platform permissions.
 
 **Visibility.** Record access derived from the active relationship, per [Pattern 2](02-relationship-derived-visibility.md).
 
@@ -48,7 +50,7 @@ This is an application pattern, not a standard platform feature.
 
 Every entry point that returns relationship-sensitive data must resolve the active context through a single service, and that service must re-validate that the user actually holds the relationship they claim to be acting under.
 
-If enforcement lives only in the client, a user can switch context to an organization they have no relationship with. The picker becomes the attack surface.
+If enforcement lives only in the client, a user can switch context to an organization they have no relationship with. The picker is a security boundary, and an unenforced boundary is an attack surface.
 
 ## Consequences
 
