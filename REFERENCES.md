@@ -12,9 +12,9 @@ Links were checked in August 2026. Salesforce documentation moves; if a link is 
 How sharing rows, access grants and group maintenance tables actually work. Salesforce states this paper is intended for expert architects working on implementations with complex record access requirements. It is the single most useful document here if you are building a sharing engine, and most people in the ecosystem have never opened it.
 [PDF version](https://resources.docs.salesforce.com/latest/latest/en-us/sfdc/pdf/salesforce_record_access_under_the_hood.pdf)
 
-**Designing Record Access for Enterprise Scale**
+**[Designing Record Access for Enterprise Scale](https://developer.salesforce.com/docs/atlas.en-us.draes.meta/draes/draes_introduction.htm)**
 Recalculation cost, group membership churn, ownership skew and large-scale realignments. Directly relevant to the scale considerations in Pattern 2, particularly the warning that seemingly simple group membership changes can trigger substantial recalculation.
-Search: *Salesforce Designing Record Access for Enterprise Scale*
+[PDF version](https://resources.docs.salesforce.com/latest/latest/en-us/sfdc/pdf/draes.pdf)
 
 **[Apex Sharing Reasons](https://help.salesforce.com/s/articleView?id=platform.security_apex_sharing_reasons.htm&type=5)**
 Custom row causes for programmatic sharing. Confirms the constraint that underpins Pattern 2: sharing reasons are defined per individual custom object, and are not available on standard objects.
@@ -29,7 +29,7 @@ Sharing declarations, user mode and the API version defaults referenced in the t
 **[Create an Account Relationship](https://help.salesforce.com/s/articleView?id=networks_configure_account_relationship.htm&type=5)**
 Account Relationships and Account Relationship Data Sharing Rules: the closest native capability to this pattern. Also see the linked considerations page for the constraints noted in the implementation notes, including the one-rule-per-relationship-type-and-object-type pairing and editability after save.
 
-**[Experience Cloud User Licenses](https://help.salesforce.com/s/articleView?id=customer_portal_users.htm&type=0)**
+**[Experience Cloud User Licenses](https://help.salesforce.com/s/articleView?id=experience.exp_cloud_plan_licenses.htm&language=en_US&type=5)**
 Licence comparison, including External Apps and Channel Account. The source for the licence decision section in the implementation notes.
 
 **[Delegate External User Administration](https://help.salesforce.com/s/articleView?id=platform.networks_DPUA.htm&type=5)**
